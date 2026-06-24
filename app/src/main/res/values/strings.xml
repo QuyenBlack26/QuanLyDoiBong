@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">QuanLi</string>
+    <string name="news_image_desc">Hình ảnh tin tức</string>
 </resources>
