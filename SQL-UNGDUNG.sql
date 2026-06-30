@@ -1,11 +1,10 @@
- 
+
 DROP DATABASE IF EXISTS QuanLyBongDa;
 CREATE DATABASE QuanLyBongDa
   CHARACTER SET utf8mb4
   COLLATE utf8mb4_unicode_ci;
  
 USE QuanLyBongDa;
- 
 
 -- BẢNG 1: QUỐC GIA ------------------------------------------------------------------------------------------------------------
 
@@ -126,7 +125,16 @@ CREATE TABLE BangXepHang (
     FOREIGN KEY (MaCLB)  REFERENCES CauLacBo(MaCLB)
 );
  
+-- BẢNG TÀI KHOẢN NHÂN VIÊN VÀ KHÁCH HÀNH
 
+CREATE TABLE TAIKHOAN (
+	MaTK       INT AUTO_INCREMENT PRIMARY KEY,
+    TenDangNhap VARCHAR(50)  NOT NULL UNIQUE,
+    MatKhau    VARCHAR(255) NOT NULL,        -- nên lưu mật khẩu đã mã hóa (hash)
+    Email      VARCHAR(100) UNIQUE,
+    HoTen      VARCHAR(100),
+    VaiTro     ENUM('Admin', 'User') NOT NULL DEFAULT 'User'
+);
 -- DỮ LIỆU MẪU-------------------------------------------------------
 
  
@@ -235,6 +243,17 @@ INSERT INTO BangXepHang VALUES
 ('EPL', 'MCI', 2, 1, 1, 0, 4, 1, 4),
 ('EPL', 'ARS', 2, 0, 0, 2, 0, 2, 0),
 ('EPL', 'MNU', 2, 0, 0, 2, 1, 4, 0);
+
+INSERT INTO TAIKHOAN (TenDangNhap, MatKhau, Email, HoTen, VaiTro) VALUES
+('admin',     '123456', 'admin@bongda.vn',   'Quản trị viên',   'Admin'),
+('nguyenvana','123456', 'vana@gmail.com',    'Nguyễn Văn A',    'User'),
+('tranthib',  '123456', 'thib@gmail.com',    'Trần Thị B',      'User'),
+('levanc',    '123456', 'vanc@gmail.com',    'Lê Văn C',        'User');
+
+
+-- ---------------------------------------------------------------------------------------------------------
+USE QuanLyBongDa;
+SELECT * FROM TAIKHOAN;
 
 -- 1. Danh sách cầu thủ + CLB hiện tại
  SELECT ct.HoTen, ct.ViTri, clb.TenCLB, hd.SoAo
