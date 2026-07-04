@@ -138,11 +138,16 @@ INSERT INTO GiaiDau VALUES
  
 -- Cầu thủ
 INSERT INTO CauThu VALUES
-('CT001', 'Đặng Văn Lâm',     '1993-06-13', 'VIE', 'Thủ môn',   187, 82),
+('CT001', 'toro',     '1993-06-13', 'BRA', 'Thủ môn',   187, 82),
 ('CT002', 'Quế Ngọc Hải',     '1993-12-20', 'VIE', 'Hậu vệ',    178, 74),
 ('CT003', 'Nguyễn Quang Hải', '1997-04-12', 'VIE', 'Tiền vệ',   168, 60),
 ('CT004', 'Tiến Linh',        '1997-03-25', 'VIE', 'Tiền đạo',  180, 74),
-('CT005', 'Geovane Magno',    '1996-01-10', 'BRA', 'Tiền đạo',  175, 72);
+('CT005', 'LUBU',    '1996-01-10', 'KOR', 'Tiền vệ',  175, 72),
+('CT006', 'RÔ Ra Nguyên',    '1996-01-10', 'VIE', 'Tiền vệ',  175, 72),
+('CT007', 'ĐĂNG ME SY',    '1996-01-10', 'VIE', 'Hậu vệ',  175, 72),
+('CT008', 'Tâm',    '1996-01-10', 'VIE', 'Hậu vệ',  175, 72),
+('CT009', 'Gia Huy',    '1996-01-10', 'BRA', 'Hậu vệ',  175, 72),
+('CT000', 'HUY ANH DUNG',    '1996-01-10', 'VIE', 'Tiền đạo',  175, 72);
  
 -- Hợp đồng
 INSERT INTO HopDong VALUES
@@ -179,7 +184,7 @@ INSERT INTO TAIKHOAN (TenDangNhap, MatKhau, Email, HoTen, VaiTro) VALUES
  
  
 -- ---------------------------------------------------------------------------------------------------------
-USE QuanLyBongDa;
+
 SELECT * FROM TAIKHOAN;
  
 -- 1. Danh sách cầu thủ hiện tại + hợp đồng
