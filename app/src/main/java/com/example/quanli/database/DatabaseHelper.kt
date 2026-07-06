@@ -13,7 +13,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
 
     companion object {
         private const val DATABASE_NAME = "QuanLyBongDa.db"
-        private const val DATABASE_VERSION = 1
+        private const val DATABASE_VERSION = 2
 
         const val TABLE_QUOC_GIA = "QuocGia"
         const val TABLE_CAU_LAC_BO = "CauLacBo"
@@ -50,18 +50,15 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
     }
 
     private fun insertSampleData(db: SQLiteDatabase) {
-        // DỮ LIỆU MẪU từ SQL-UNGDUNG.sql
+        // DỮ LIỆU MẪU khớp hoàn toàn với hình ảnh MySQL Workbench của bạn
         
         // Quốc gia
         db.execSQL("INSERT INTO $TABLE_QUOC_GIA VALUES ('VIE', 'Việt Nam')")
         db.execSQL("INSERT INTO $TABLE_QUOC_GIA VALUES ('BRA', 'Brazil')")
-        db.execSQL("INSERT INTO $TABLE_QUOC_GIA VALUES ('NGA', 'Nigeria')")
         db.execSQL("INSERT INTO $TABLE_QUOC_GIA VALUES ('KOR', 'Hàn Quốc')")
 
-        // CLB
-        db.execSQL("INSERT INTO $TABLE_CAU_LAC_BO VALUES ('HAN', 'Hà Nội FC', 'VIE', 2010, 'Sân Hàng Đẫy', 'Nguyễn Văn A')")
-
-        // Cầu thủ
+        // Cầu thủ (Khớp chính xác với Result Grid trong ảnh của bạn)
+        db.execSQL("INSERT INTO $TABLE_CAU_THU VALUES ('CT000', 'HUY ANH DUNG', '1996-01-10', 'VIE', 'Tiền đạo', 175, 72)")
         db.execSQL("INSERT INTO $TABLE_CAU_THU VALUES ('CT001', 'toro', '1993-06-13', 'BRA', 'Thủ môn', 187, 82)")
         db.execSQL("INSERT INTO $TABLE_CAU_THU VALUES ('CT002', 'Quế Ngọc Hải', '1993-12-20', 'VIE', 'Hậu vệ', 178, 74)")
         db.execSQL("INSERT INTO $TABLE_CAU_THU VALUES ('CT003', 'Nguyễn Quang Hải', '1997-04-12', 'VIE', 'Tiền vệ', 168, 60)")
@@ -71,11 +68,9 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         db.execSQL("INSERT INTO $TABLE_CAU_THU VALUES ('CT007', 'ĐĂNG ME SY', '1996-01-10', 'VIE', 'Hậu vệ', 175, 72)")
         db.execSQL("INSERT INTO $TABLE_CAU_THU VALUES ('CT008', 'Tâm', '1996-01-10', 'VIE', 'Hậu vệ', 175, 72)")
         db.execSQL("INSERT INTO $TABLE_CAU_THU VALUES ('CT009', 'Gia Huy', '1996-01-10', 'BRA', 'Hậu vệ', 175, 72)")
-        db.execSQL("INSERT INTO $TABLE_CAU_THU VALUES ('CT000', 'HUY ANH DUNG', '1996-01-10', 'VIE', 'Tiền đạo', 175, 72)")
 
         // Tài khoản
         db.execSQL("INSERT INTO $TABLE_TAI_KHOAN (TenDangNhap, MatKhau, Email, HoTen, VaiTro) VALUES ('admin', '123456', 'admin@hanoifc.vn', 'Quản trị viên', 'Admin')")
-        db.execSQL("INSERT INTO $TABLE_TAI_KHOAN (TenDangNhap, MatKhau, Email, HoTen, VaiTro) VALUES ('nguyenvana', '123456', 'vana@gmail.com', 'Nguyễn Văn A', 'User')")
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
