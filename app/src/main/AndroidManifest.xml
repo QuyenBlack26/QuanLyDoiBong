@@ -37,6 +37,11 @@
             android:exported="false"
             android:label="Thêm tin tức" />
 
+        <activity
+            android:name=".activity.PlayerManagementActivity"
+            android:exported="false"
+            android:label="Quản lý cầu thủ" />
+
     </application>
 
 </manifest>
