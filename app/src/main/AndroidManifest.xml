@@ -12,13 +12,19 @@
         android:theme="@style/Theme.QuanLi">
 
         <activity
-            android:name=".MainActivity"
+            android:name=".HomeActivity"
             android:exported="true"
-            android:windowSoftInputMode="adjustResize">
+            android:label="Trang Chủ">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:windowSoftInputMode="adjustResize">
         </activity>
 
         <activity
@@ -30,6 +36,11 @@
             android:name=".AddNewsActivity"
             android:exported="false"
             android:label="Thêm tin tức" />
+
+        <activity
+            android:name=".activity.PlayerManagementActivity"
+            android:exported="false"
+            android:label="Quản lý cầu thủ" />
 
     </application>
 
