@@ -40,7 +40,10 @@ class HomeActivity : AppCompatActivity() {
 
     private fun loadPlayersFromDatabase() {
         val players = dbHelper.getAllPlayers()
-        playerAdapter.updateData(players)
+        val playerModels = players.map {
+            com.example.quanli.model.PlayerModel.fromPlayer(it)
+        }
+        playerAdapter.updateData(playerModels)
     }
 
     private fun handleNavigation(item: MenuItem): Boolean {

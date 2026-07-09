@@ -1,38 +1,46 @@
 package com.example.quanli.adapter
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.quanli.R
-import com.example.quanli.model.Player
+import com.example.quanli.databinding.ItemPlayerBinding
+import com.example.quanli.model.PlayerModel
 
-class PlayerAdapter(private var players: List<Player>) :
-    RecyclerView.Adapter<PlayerAdapter.PlayerViewHolder>() {
+class PlayerAdapter(
+    private var players: List<PlayerModel>,
+    private val onEditClick: (PlayerModel) -> Unit = {},
+    private val onDeleteClick: (PlayerModel) -> Unit = {},
+    private val onItemClick: (PlayerModel) -> Unit = {}
+) : RecyclerView.Adapter<PlayerAdapter.PlayerViewHolder>() {
 
-    class PlayerViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val name: TextView = view.findViewById(R.id.playerName)
-        val position: TextView = view.findViewById(R.id.playerPosition)
-        val details: TextView = view.findViewById(R.id.playerDetails)
-    }
+    class PlayerViewHolder(val binding: ItemPlayerBinding) : RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlayerViewHolder {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_player, parent, false)
-        return PlayerViewHolder(view)
+        val binding = ItemPlayerBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return PlayerViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: PlayerViewHolder, position: Int) {
         val player = players[position]
-        holder.name.text = player.name
-        holder.position.text = player.position ?: "N/A"
-        holder.details.text = "${player.height}cm - ${player.weight}kg | Quốc tịch: ${player.nationality}"
+        val context = holder.binding.root.context
+        holder.binding.apply {
+            tvPlayerName.text = player.name
+            tvPlayerId.text = player.playerId
+            tvPlayerPosition.text = context.getString(R.string.lbl_position_prefix, player.position)
+            tvPlayerClub.text = context.getString(R.string.lbl_club_prefix, player.club)
+            tvPlayerNumber.text = context.getString(R.string.lbl_jersey_prefix, player.jerseyNumber)
+            ivPlayerAvatar.setImageResource(player.avatar)
+
+            btnEditPlayer.setOnClickListener { onEditClick(player) }
+            btnDeletePlayer.setOnClickListener { onDeleteClick(player) }
+            root.setOnClickListener { onItemClick(player) }
+        }
     }
 
-    override fun getItemCount() = players.size
+    override fun getItemCount(): Int = players.size
 
-    fun updateData(newPlayers: List<Player>) {
+    fun updateData(newPlayers: List<PlayerModel>) {
         players = newPlayers
         notifyDataSetChanged()
     }
