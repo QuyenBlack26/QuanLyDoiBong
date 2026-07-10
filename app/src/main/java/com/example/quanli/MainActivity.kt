@@ -1,14 +1,17 @@
 package com.example.quanli
-import com.example.quanli.fragment.TeamDetailFragment
+
+import android.content.Intent
 import android.os.Bundle
-<<<<<<< HEAD
 import android.view.Menu
 import android.widget.Toast
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.quanli.adapter.NewsAdapter
@@ -16,27 +19,51 @@ import com.example.quanli.model.News
 import com.example.quanli.viewmodel.NewsViewModel
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-=======
-import androidx.appcompat.app.AppCompatActivity
-// Tí nữa dán xong mà chữ TeamDetailFragment bị đỏ, ông bấm Alt + Enter vào nó để tự Import nha!
->>>>>>> Trí
 
 class MainActivity : AppCompatActivity() {
 
+    private val viewModel: NewsViewModel by viewModels()
+    private lateinit var adapter: NewsAdapter
+
+    private val addNewsLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == RESULT_OK) {
+            val data = result.data
+            val title = data?.getStringExtra("title") ?: ""
+            val content = data?.getStringExtra("content") ?: ""
+            val imageUrl = data?.getStringExtra("imageUrl") ?: ""
+            val date = data?.getStringExtra("date") ?: ""
+            
+            val newNews = News(
+                id = (viewModel.newsList.value?.size ?: 0) + 1,
+                title = title,
+                content = content,
+                imageUrl = imageUrl,
+                date = date
+            )
+            viewModel.addNews(newNews)
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-<<<<<<< HEAD
+        enableEdgeToEdge()
         setContentView(R.layout.activity_main)
         
         val toolbar = findViewById<MaterialToolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
-        toolbar.setNavigationOnClickListener {
-            onBackPressedDispatcher.onBackPressed()
-        }
         
+        setupEdgeToEdge()
         setupRecyclerView()
         observeViewModel()
         setupFab()
+    }
+
+    private fun setupEdgeToEdge() {
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            insets
+        }
     }
 
     private fun setupRecyclerView() {
@@ -98,13 +125,3 @@ class MainActivity : AppCompatActivity() {
         return true
     }
 }
-=======
-
-        // Chiêu "lấn sân": Bỏ qua giao diện activity_main của bạn ông.
-        // Ép hệ thống nhét thẳng cái Fragment chi tiết đội bóng của ông lên full màn hình!
-        supportFragmentManager.beginTransaction()
-            .replace(android.R.id.content, TeamDetailFragment())
-            .commit()
-    }
-}
->>>>>>> Trí
