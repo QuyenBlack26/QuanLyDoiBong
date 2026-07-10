@@ -14,6 +14,7 @@
         android:background="?attr/colorPrimary"
         app:titleTextColor="@android:color/white"
         app:title="Tin tức bóng đá"
+        app:navigationIcon="@drawable/ic_arrow_back"
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView

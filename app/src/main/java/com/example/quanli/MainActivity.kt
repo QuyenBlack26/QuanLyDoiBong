@@ -51,6 +51,9 @@ class MainActivity : AppCompatActivity() {
         
         val toolbar = findViewById<MaterialToolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
+        toolbar.setNavigationOnClickListener {
+            onBackPressedDispatcher.onBackPressed()
+        }
         
         setupEdgeToEdge()
         setupRecyclerView()
