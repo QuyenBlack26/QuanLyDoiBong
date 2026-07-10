@@ -1,7 +1,7 @@
 package com.example.quanli
-
-import android.content.Intent
+import com.example.quanli.fragment.TeamDetailFragment
 import android.os.Bundle
+<<<<<<< HEAD
 import android.view.Menu
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -16,33 +16,16 @@ import com.example.quanli.model.News
 import com.example.quanli.viewmodel.NewsViewModel
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+=======
+import androidx.appcompat.app.AppCompatActivity
+// Tí nữa dán xong mà chữ TeamDetailFragment bị đỏ, ông bấm Alt + Enter vào nó để tự Import nha!
+>>>>>>> Trí
 
 class MainActivity : AppCompatActivity() {
 
-    private val viewModel: NewsViewModel by viewModels()
-    private lateinit var adapter: NewsAdapter
-
-    private val addNewsLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == RESULT_OK) {
-            val data = result.data
-            val title = data?.getStringExtra("title") ?: ""
-            val content = data?.getStringExtra("content") ?: ""
-            val imageUrl = data?.getStringExtra("imageUrl") ?: ""
-            val date = data?.getStringExtra("date") ?: ""
-            
-            val newNews = News(
-                id = (viewModel.newsList.value?.size ?: 0) + 1,
-                title = title,
-                content = content,
-                imageUrl = imageUrl,
-                date = date
-            )
-            viewModel.addNews(newNews)
-        }
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+<<<<<<< HEAD
         setContentView(R.layout.activity_main)
         
         val toolbar = findViewById<MaterialToolbar>(R.id.toolbar)
@@ -115,3 +98,13 @@ class MainActivity : AppCompatActivity() {
         return true
     }
 }
+=======
+
+        // Chiêu "lấn sân": Bỏ qua giao diện activity_main của bạn ông.
+        // Ép hệ thống nhét thẳng cái Fragment chi tiết đội bóng của ông lên full màn hình!
+        supportFragmentManager.beginTransaction()
+            .replace(android.R.id.content, TeamDetailFragment())
+            .commit()
+    }
+}
+>>>>>>> Trí
