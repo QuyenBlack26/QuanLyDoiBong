@@ -51,19 +51,13 @@ class MainActivity : AppCompatActivity() {
         
         val toolbar = findViewById<MaterialToolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
+        toolbar.setNavigationOnClickListener {
+            onBackPressedDispatcher.onBackPressed()
+        }
         
-        setupEdgeToEdge()
         setupRecyclerView()
         observeViewModel()
         setupFab()
-    }
-
-    private fun setupEdgeToEdge() {
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
     }
 
     private fun setupRecyclerView() {
