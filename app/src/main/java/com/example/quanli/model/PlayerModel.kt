@@ -1,9 +1,11 @@
 package com.example.quanli.model
 
+import androidx.annotation.DrawableRes
 import com.example.quanli.R
 
 /**
- * Data model for a Player in the Football Club.
+ * Data model for a Player (CauThu)
+ * Cấu trúc tương ứng với bảng CauThu và HopDong trong dự án.
  */
 data class PlayerModel(
     val playerId: String,
@@ -15,7 +17,7 @@ data class PlayerModel(
     val weight: Int,
     val club: String,
     val jerseyNumber: Int,
-    val avatar: Int
+    @DrawableRes val avatar: Int
 ) {
     companion object {
         fun fromPlayer(player: Player, club: String = "N/A", jerseyNumber: Int = 0, avatar: Int = R.drawable.ic_player_placeholder): PlayerModel {

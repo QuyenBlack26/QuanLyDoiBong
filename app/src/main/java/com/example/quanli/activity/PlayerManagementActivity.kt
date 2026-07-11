@@ -15,25 +15,23 @@ import com.example.quanli.adapter.PlayerAdapter
 import com.example.quanli.databinding.ActivityPlayerManagementBinding
 import com.example.quanli.databinding.DialogPlayerBinding
 import com.example.quanli.model.PlayerModel
+import com.google.android.material.snackbar.Snackbar
 
 /**
  * PlayerManagementActivity handles the UI for managing the football club's players.
- * Improved with Search, Filter, and actual List management.
+ * Features: Real-time search, multi-criteria filtering, sorting, and CRUD operations.
  */
 class PlayerManagementActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityPlayerManagementBinding
     private lateinit var playerAdapter: PlayerAdapter
     
-    // originalList stores all players (database representation)
     private val originalList = mutableListOf<PlayerModel>()
-    // displayList stores players currently shown (filtered/searched)
     private val displayList = mutableListOf<PlayerModel>()
 
-    // Shared dropdown data to maintain consistency and reduce duplication
     private val countries = arrayOf("Việt Nam", "Thái Lan", "Brazil", "Anh", "Pháp", "Đức", "Tây Ban Nha", "Argentina", "Bồ Đào Nha")
     private val positions = arrayOf("Thủ môn", "Hậu vệ", "Tiền vệ", "Tiền đạo")
-    private val clubs = arrayOf("Hà Nội FC", "HAGL", "Viettel", "Manchester United", "Real Madrid", "Barcelona")
+    private val clubs = arrayOf("Hà Nội FC", "HAGL", "Viettel", "Manchester United", "Real Madrid", "Barcelona", "Al Nassr")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,16 +59,27 @@ class PlayerManagementActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.action_search -> {
-                binding.etSearch.requestFocus()
+            R.id.action_sort_name -> {
+                sortPlayers { it.name }
                 true
             }
-            R.id.action_more -> {
-                Toast.makeText(this, getString(R.string.msg_more_options), Toast.LENGTH_SHORT).show()
+            R.id.action_sort_height -> {
+                sortPlayers { it.height }
+                true
+            }
+            R.id.action_sort_number -> {
+                sortPlayers { it.jerseyNumber }
                 true
             }
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    private fun <T : Comparable<T>> sortPlayers(selector: (PlayerModel) -> T) {
+        val sortedList = displayList.sortedBy { selector(it) }
+        displayList.clear()
+        displayList.addAll(sortedList)
+        playerAdapter.updateData(displayList.toList())
     }
 
     private fun setupRecyclerView() {
@@ -80,7 +89,7 @@ class PlayerManagementActivity : AppCompatActivity() {
             onEditClick = { player -> showPlayerDialog(player) },
             onDeleteClick = { player -> confirmDeletePlayer(player) },
             onItemClick = { player ->
-                Toast.makeText(this, getString(R.string.msg_details, player.name), Toast.LENGTH_SHORT).show()
+                showSnackbar(getString(R.string.msg_details, player.name))
             }
         )
         binding.rvPlayers.adapter = playerAdapter
@@ -88,14 +97,10 @@ class PlayerManagementActivity : AppCompatActivity() {
     }
 
     private fun setupFilters() {
-        val countryAdapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, countries)
-        binding.autoCompleteNationality.setAdapter(countryAdapter)
-
-        val positionAdapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, positions)
-        binding.autoCompletePosition.setAdapter(positionAdapter)
-
-        val clubAdapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, clubs)
-        binding.autoCompleteClub.setAdapter(clubAdapter)
+        val adapter = { list: Array<String> -> ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, list) }
+        binding.autoCompleteNationality.setAdapter(adapter(countries))
+        binding.autoCompletePosition.setAdapter(adapter(positions))
+        binding.autoCompleteClub.setAdapter(adapter(clubs))
     }
 
     private fun setupListeners() {
@@ -107,32 +112,34 @@ class PlayerManagementActivity : AppCompatActivity() {
             applyFilters()
         }
 
-        // Real-time Search Implementation
+        binding.btnReset.setOnClickListener {
+            binding.etSearch.text?.clear()
+            binding.autoCompleteNationality.setText("", false)
+            binding.autoCompletePosition.setText("", false)
+            binding.autoCompleteClub.setText("", false)
+            applyFilters()
+        }
+
         binding.etSearch.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                applyFilters() // Apply both search and filters instantly
+                applyFilters()
             }
             override fun afterTextChanged(s: Editable?) {}
         })
     }
 
-    /**
-     * Filters the original list based on search text and selected dropdown values.
-     */
     private fun applyFilters() {
-        val searchText = binding.etSearch.text.toString().lowercase()
-        val selectedCountry = binding.autoCompleteNationality.text.toString()
-        val selectedPosition = binding.autoCompletePosition.text.toString()
-        val selectedClub = binding.autoCompleteClub.text.toString()
+        val query = binding.etSearch.text.toString().trim().lowercase()
+        val country = binding.autoCompleteNationality.text.toString()
+        val position = binding.autoCompletePosition.text.toString()
+        val club = binding.autoCompleteClub.text.toString()
 
-        val filtered = originalList.filter { player ->
-            val matchesSearch = player.name.lowercase().contains(searchText)
-            val matchesCountry = selectedCountry.isEmpty() || player.nationality == selectedCountry
-            val matchesPosition = selectedPosition.isEmpty() || player.position == selectedPosition
-            val matchesClub = selectedClub.isEmpty() || player.club == selectedClub
-
-            matchesSearch && matchesCountry && matchesPosition && matchesClub
+        val filtered = originalList.filter {
+            (it.name.lowercase().contains(query) || it.playerId.lowercase().contains(query)) &&
+            (country.isEmpty() || it.nationality == country) &&
+            (position.isEmpty() || it.position == position) &&
+            (club.isEmpty() || it.club == club)
         }
 
         displayList.clear()
@@ -141,10 +148,6 @@ class PlayerManagementActivity : AppCompatActivity() {
         checkEmptyState()
     }
 
-    /**
-     * Shows a dialog to add a new player or edit an existing one.
-     * Includes field validation and list updates.
-     */
     private fun showPlayerDialog(player: PlayerModel?) {
         val dialogBinding = DialogPlayerBinding.inflate(layoutInflater)
         val builder = AlertDialog.Builder(this)
@@ -152,15 +155,15 @@ class PlayerManagementActivity : AppCompatActivity() {
         
         val alertDialog = builder.create()
 
-        // Setup dropdowns in dialog
-        dialogBinding.autoCompleteDialogNationality.setAdapter(ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, countries))
-        dialogBinding.autoCompleteDialogPosition.setAdapter(ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, positions))
-        dialogBinding.autoCompleteDialogClub.setAdapter(ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, clubs))
+        val adapter = { list: Array<String> -> ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, list) }
+        dialogBinding.autoCompleteDialogNationality.setAdapter(adapter(countries))
+        dialogBinding.autoCompleteDialogPosition.setAdapter(adapter(positions))
+        dialogBinding.autoCompleteDialogClub.setAdapter(adapter(clubs))
 
         if (player != null) {
             dialogBinding.tvDialogTitle.text = getString(R.string.lbl_edit_player)
             dialogBinding.etPlayerId.setText(player.playerId)
-            dialogBinding.etPlayerId.isEnabled = false // Database ID usually immutable
+            dialogBinding.etPlayerId.isEnabled = false
             dialogBinding.etFullName.setText(player.name)
             dialogBinding.etBirthDate.setText(player.birthDate)
             dialogBinding.autoCompleteDialogNationality.setText(player.nationality, false)
@@ -175,32 +178,30 @@ class PlayerManagementActivity : AppCompatActivity() {
         dialogBinding.btnSave.setOnClickListener {
             if (validateFields(dialogBinding, player != null)) {
                 val newPlayer = PlayerModel(
-                    playerId = dialogBinding.etPlayerId.text.toString(),
-                    name = dialogBinding.etFullName.text.toString(),
-                    birthDate = dialogBinding.etBirthDate.text.toString(),
+                    playerId = dialogBinding.etPlayerId.text.toString().trim(),
+                    name = dialogBinding.etFullName.text.toString().trim(),
+                    birthDate = dialogBinding.etBirthDate.text.toString().trim(),
                     nationality = dialogBinding.autoCompleteDialogNationality.text.toString(),
                     position = dialogBinding.autoCompleteDialogPosition.text.toString(),
-                    height = dialogBinding.etHeight.text.toString().toIntOrNull() ?: 0,
-                    weight = dialogBinding.etWeight.text.toString().toIntOrNull() ?: 0,
+                    height = dialogBinding.etHeight.text.toString().toInt(),
+                    weight = dialogBinding.etWeight.text.toString().toInt(),
                     club = dialogBinding.autoCompleteDialogClub.text.toString(),
-                    jerseyNumber = dialogBinding.etJerseyNumber.text.toString().toIntOrNull() ?: 0,
+                    jerseyNumber = dialogBinding.etJerseyNumber.text.toString().toInt(),
                     avatar = player?.avatar ?: R.drawable.ic_player_placeholder
                 )
 
                 if (player == null) {
-                    // Create new player entry
                     originalList.add(newPlayer)
-                    Toast.makeText(this, getString(R.string.msg_player_added), Toast.LENGTH_SHORT).show()
+                    showSnackbar(getString(R.string.msg_player_added, newPlayer.name))
                 } else {
-                    // Update existing player entry
                     val index = originalList.indexOfFirst { it.playerId == player.playerId }
                     if (index != -1) {
                         originalList[index] = newPlayer
-                        Toast.makeText(this, getString(R.string.msg_player_updated), Toast.LENGTH_SHORT).show()
+                        showSnackbar(getString(R.string.msg_player_updated, newPlayer.name))
                     }
                 }
                 
-                applyFilters() // Refresh UI immediately
+                applyFilters()
                 alertDialog.dismiss()
             }
         }
@@ -208,117 +209,97 @@ class PlayerManagementActivity : AppCompatActivity() {
         alertDialog.show()
     }
 
-    /**
-     * Comprehensive field validation for the player dialog.
-     */
-    private fun validateFields(dialogBinding: DialogPlayerBinding, isEdit: Boolean): Boolean {
-        var isValid = true
-
-        // 1. Player ID Validation
-        val enteredId = dialogBinding.etPlayerId.text.toString().trim()
-        if (enteredId.isBlank()) {
-            dialogBinding.etPlayerId.error = getString(R.string.error_id_required)
-            isValid = false
-        } else if (!isEdit && originalList.any { it.playerId == enteredId }) {
-            dialogBinding.etPlayerId.error = getString(R.string.error_id_exists)
-            isValid = false
+    private fun validateFields(db: DialogPlayerBinding, isEdit: Boolean): Boolean {
+        var valid = true
+        val id = db.etPlayerId.text.toString().trim()
+        if (id.isEmpty()) { 
+            db.etPlayerId.error = getString(R.string.error_id_required)
+            db.etPlayerId.requestFocus()
+            valid = false 
+        } else if (!isEdit && originalList.any { it.playerId == id }) { 
+            db.etPlayerId.error = getString(R.string.error_id_exists)
+            db.etPlayerId.requestFocus()
+            valid = false 
         }
-
-        // 2. Full Name Validation
-        if (dialogBinding.etFullName.text.isNullOrBlank()) {
-            dialogBinding.etFullName.error = getString(R.string.error_name_required)
-            isValid = false
+        
+        if (db.etFullName.text.isNullOrBlank()) { 
+            db.etFullName.error = getString(R.string.error_name_required)
+            if(valid) db.etFullName.requestFocus()
+            valid = false 
         }
-
-        // 3. Birth Date Validation (dd/MM/yyyy)
-        val birthDate = dialogBinding.etBirthDate.text.toString().trim()
+        
         val dateRegex = "^([0-2][0-9]|(3)[0-1])/(0[1-9]|1[0-2])/\\d{4}$".toRegex()
-        if (birthDate.isBlank()) {
-            dialogBinding.etBirthDate.error = getString(R.string.error_date_required)
-            isValid = false
-        } else if (!dateRegex.matches(birthDate)) {
-            dialogBinding.etBirthDate.error = getString(R.string.error_date_format)
-            isValid = false
+        if (!dateRegex.matches(db.etBirthDate.text.toString().trim())) { 
+            db.etBirthDate.error = getString(R.string.error_date_format)
+            if(valid) db.etBirthDate.requestFocus()
+            valid = false 
         }
-
-        // 4. Height Validation (100 - 250 cm)
-        val heightStr = dialogBinding.etHeight.text.toString().trim()
-        val height = heightStr.toIntOrNull()
-        if (heightStr.isBlank()) {
-            dialogBinding.etHeight.error = getString(R.string.error_height_required)
-            isValid = false
-        } else if (height == null || height !in 100..250) {
-            dialogBinding.etHeight.error = getString(R.string.error_height_invalid)
-            isValid = false
+        
+        val h = db.etHeight.text.toString().toIntOrNull()
+        if (h == null || h !in 100..250) { 
+            db.etHeight.error = getString(R.string.error_height_invalid)
+            if(valid) db.etHeight.requestFocus()
+            valid = false 
         }
-
-        // 5. Weight Validation (30 - 200 kg)
-        val weightStr = dialogBinding.etWeight.text.toString().trim()
-        val weight = weightStr.toIntOrNull()
-        if (weightStr.isBlank()) {
-            dialogBinding.etWeight.error = getString(R.string.error_weight_required)
-            isValid = false
-        } else if (weight == null || weight !in 30..200) {
-            dialogBinding.etWeight.error = getString(R.string.error_weight_invalid)
-            isValid = false
+        
+        val w = db.etWeight.text.toString().toIntOrNull()
+        if (w == null || w !in 30..200) { 
+            db.etWeight.error = getString(R.string.error_weight_invalid)
+            if(valid) db.etWeight.requestFocus()
+            valid = false 
         }
-
-        // 6. Jersey Number Validation (1 - 99)
-        val jerseyStr = dialogBinding.etJerseyNumber.text.toString().trim()
-        val jersey = jerseyStr.toIntOrNull()
-        if (jerseyStr.isBlank()) {
-            dialogBinding.etJerseyNumber.error = getString(R.string.error_jersey_required)
-            isValid = false
-        } else if (jersey == null || jersey !in 1..99) {
-            dialogBinding.etJerseyNumber.error = getString(R.string.error_jersey_invalid)
-            isValid = false
+        
+        val j = db.etJerseyNumber.text.toString().toIntOrNull()
+        if (j == null || j !in 1..99) { 
+            db.etJerseyNumber.error = getString(R.string.error_jersey_invalid)
+            if(valid) db.etJerseyNumber.requestFocus()
+            valid = false 
         }
-
-        return isValid
+        
+        return valid
     }
 
-    /**
-     * Confirms and deletes a player from the list.
-     */
     private fun confirmDeletePlayer(player: PlayerModel) {
+        val deletedPlayer = player
+        val deletedIndex = originalList.indexOf(player)
+        
         AlertDialog.Builder(this)
             .setTitle(getString(R.string.title_confirm_delete))
             .setMessage(getString(R.string.msg_confirm_delete, player.name))
             .setPositiveButton(getString(R.string.btn_delete)) { _, _ ->
-                originalList.removeAll { it.playerId == player.playerId }
+                originalList.remove(player)
                 applyFilters()
-                Toast.makeText(this, getString(R.string.msg_player_deleted, player.name), Toast.LENGTH_SHORT).show()
+                
+                Snackbar.make(binding.root, getString(R.string.msg_player_deleted, player.name), Snackbar.LENGTH_LONG)
+                    .setAction(getString(R.string.msg_undo)) {
+                        originalList.add(deletedIndex, deletedPlayer)
+                        applyFilters()
+                    }.show()
             }
-            .setNegativeButton(getString(R.string.btn_cancel), null)
-            .show()
+            .setNegativeButton(getString(R.string.btn_cancel), null).show()
     }
 
-    /**
-     * Handles visibility of the empty state message.
-     */
+    private fun showSnackbar(msg: String) {
+        Snackbar.make(binding.root, msg, Snackbar.LENGTH_SHORT).show()
+    }
+
     private fun checkEmptyState() {
-        if (displayList.isEmpty()) {
-            binding.tvEmptyState.visibility = View.VISIBLE
-            binding.rvPlayers.visibility = View.GONE
-        } else {
-            binding.tvEmptyState.visibility = View.GONE
-            binding.rvPlayers.visibility = View.VISIBLE
-        }
+        binding.tvEmptyState.visibility = if (displayList.isEmpty()) View.VISIBLE else View.GONE
+        binding.rvPlayers.visibility = if (displayList.isEmpty()) View.GONE else View.VISIBLE
     }
 
-    /**
-     * Generates dummy data with database-like IDs (CTxxx).
-     */
     private fun setupDummyData() {
-        originalList.add(PlayerModel("CT001", "Nguyễn Quang Hải", "12/04/1997", "Việt Nam", "Tiền vệ", 168, 65, "Hà Nội FC", 19, R.drawable.ic_player_placeholder))
-        originalList.add(PlayerModel("CT002", "Nguyễn Công Phượng", "21/01/1995", "Việt Nam", "Tiền đạo", 168, 65, "HAGL", 10, R.drawable.ic_player_placeholder))
-        originalList.add(PlayerModel("CT003", "Đặng Văn Lâm", "13/08/1993", "Việt Nam", "Thủ môn", 188, 85, "Viettel", 1, R.drawable.ic_player_placeholder))
-        originalList.add(PlayerModel("CT004", "Đỗ Duy Mạnh", "29/09/1996", "Việt Nam", "Hậu vệ", 180, 75, "Hà Nội FC", 2, R.drawable.ic_player_placeholder))
-        originalList.add(PlayerModel("CT005", "Lionel Messi", "24/06/1987", "Argentina", "Tiền đạo", 170, 72, "Manchester United", 10, R.drawable.ic_player_placeholder))
-        originalList.add(PlayerModel("CT006", "Cristiano Ronaldo", "05/02/1985", "Bồ Đào Nha", "Tiền đạo", 187, 83, "Real Madrid", 7, R.drawable.ic_player_placeholder))
-        originalList.add(PlayerModel("CT007", "Kylian Mbappé", "20/12/1998", "Pháp", "Tiền đạo", 178, 73, "Real Madrid", 9, R.drawable.ic_player_placeholder))
-        originalList.add(PlayerModel("CT008", "Đoàn Văn Hậu", "19/04/1999", "Việt Nam", "Hậu vệ", 185, 80, "Hà Nội FC", 5, R.drawable.ic_player_placeholder))
-        originalList.add(PlayerModel("CT009", "Nguyễn Tuấn Anh", "16/05/1995", "Việt Nam", "Tiền vệ", 176, 70, "HAGL", 11, R.drawable.ic_player_placeholder))
-        originalList.add(PlayerModel("CT010", "Đỗ Hùng Dũng", "08/09/1993", "Việt Nam", "Tiền vệ", 170, 68, "Hà Nội FC", 8, R.drawable.ic_player_placeholder))
+        originalList.addAll(listOf(
+            PlayerModel("CT001", "Nguyễn Quang Hải", "12/04/1997", "Việt Nam", "Tiền vệ", 168, 65, "Hà Nội FC", 19, R.drawable.ic_player_placeholder),
+            PlayerModel("CT002", "Nguyễn Công Phượng", "21/01/1995", "Việt Nam", "Tiền đạo", 168, 65, "HAGL", 10, R.drawable.ic_player_placeholder),
+            PlayerModel("CT003", "Đặng Văn Lâm", "13/08/1993", "Việt Nam", "Thủ môn", 188, 85, "Viettel", 1, R.drawable.ic_player_placeholder),
+            PlayerModel("CT004", "Đỗ Duy Mạnh", "29/09/1996", "Việt Nam", "Hậu vệ", 180, 75, "Hà Nội FC", 2, R.drawable.ic_player_placeholder),
+            PlayerModel("CT005", "Lionel Messi", "24/06/1987", "Argentina", "Tiền đạo", 170, 72, "Barcelona", 10, R.drawable.ic_player_placeholder),
+            PlayerModel("CT006", "Cristiano Ronaldo", "05/02/1985", "Bồ Đào Nha", "Tiền đạo", 187, 83, "Al Nassr", 7, R.drawable.ic_player_placeholder),
+            PlayerModel("CT007", "Kylian Mbappé", "20/12/1998", "Pháp", "Tiền đạo", 178, 73, "Real Madrid", 9, R.drawable.ic_player_placeholder),
+            PlayerModel("CT008", "Đoàn Văn Hậu", "19/04/1999", "Việt Nam", "Hậu vệ", 185, 80, "Hà Nội FC", 5, R.drawable.ic_player_placeholder),
+            PlayerModel("CT009", "Nguyễn Tuấn Anh", "16/05/1995", "Việt Nam", "Tiền vệ", 176, 70, "HAGL", 11, R.drawable.ic_player_placeholder),
+            PlayerModel("CT010", "Đỗ Hùng Dũng", "08/09/1993", "Việt Nam", "Tiền vệ", 170, 68, "Hà Nội FC", 8, R.drawable.ic_player_placeholder)
+        ))
     }
 }
