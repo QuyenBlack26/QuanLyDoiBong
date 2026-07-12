@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">QuanLi</string>
     <string name="news_image_desc">Hình ảnh tin tức</string>
+    <string name="nav_news">Tin tức</string>
 
     <!-- Player Management -->
     <string name="player_management_title">Quản lý cầu thủ</string>

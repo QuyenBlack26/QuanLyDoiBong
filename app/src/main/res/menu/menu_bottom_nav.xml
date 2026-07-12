@@ -13,6 +13,10 @@
         android:icon="@android:drawable/ic_menu_recent_history"
         android:title="Lịch sử" />
     <item
+        android:id="@+id/nav_news"
+        android:icon="@android:drawable/ic_menu_agenda"
+        android:title="@string/nav_news" />
+    <item
         android:id="@+id/nav_admin"
         android:icon="@android:drawable/ic_menu_manage"
         android:title="Quản lý" />

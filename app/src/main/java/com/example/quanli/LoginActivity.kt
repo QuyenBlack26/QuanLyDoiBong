@@ -36,7 +36,10 @@ class LoginActivity : AppCompatActivity() {
         viewModel.loginStatus.observe(this) { success ->
             if (success) {
                 Toast.makeText(this, "Đăng nhập thành công", Toast.LENGTH_SHORT).show()
-                startActivity(Intent(this, HomeNewActivity::class.java))
+                val intent = Intent(this, HomeNewActivity::class.java)
+                intent.putExtra("USERNAME", edtUser.text.toString().trim())
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                startActivity(intent)
                 finish()
             } else {
                 Toast.makeText(this, "Sai tài khoản hoặc mật khẩu", Toast.LENGTH_SHORT).show()
