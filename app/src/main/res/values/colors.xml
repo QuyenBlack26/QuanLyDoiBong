@@ -2,4 +2,12 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="dark_bg">#121212</color>
+    <color name="dark_surface">#1E1E1E</color>
+    <color name="text_primary_white">#FFFFFF</color>
+    <color name="text_secondary_gray">#B0B0B0</color>
+    <color name="win_green">#4CAF50</color>
+    <color name="draw_yellow">#FFC107</color>
+    <color name="loss_red">#F44336</color>
+    <color name="tab_indicator_red">#FF1744</color>
 </resources>
