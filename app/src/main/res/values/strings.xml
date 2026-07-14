@@ -1,4 +1,67 @@
 <resources>
     <string name="app_name">QuanLi</string>
     <string name="news_image_desc">Hình ảnh tin tức</string>
+    <string name="nav_news">Tin tức</string>
+
+    <!-- Player Management -->
+    <string name="player_management_title">Quản lý cầu thủ</string>
+    <string name="search_player_hint">Tìm cầu thủ…</string>
+    <string name="nationality_hint">Quốc gia</string>
+    <string name="position_hint">Vị trí</string>
+    <string name="club_hint">Câu lạc bộ</string>
+    <string name="filter_button">Lọc</string>
+    <string name="empty_players_message">Không tìm thấy cầu thủ nào</string>
+    <string name="empty_players_hint">Nhấn nút + để thêm cầu thủ.</string>
+    <string name="add_player_desc">Thêm cầu thủ</string>
+
+    <!-- Menu Actions -->
+    <string name="action_search">Tìm kiếm</string>
+    <string name="action_more">Thêm</string>
+
+    <!-- Player Dialog Labels -->
+    <string name="lbl_player_info">Thông tin cầu thủ</string>
+    <string name="lbl_edit_player">Chỉnh sửa cầu thủ</string>
+    <string name="lbl_player_id">ID cầu thủ</string>
+    <string name="lbl_full_name">Họ và tên</string>
+    <string name="lbl_birth_date">Ngày sinh</string>
+    <string name="lbl_height">Chiều cao (cm)</string>
+    <string name="lbl_weight">Cân nặng (kg)</string>
+    <string name="lbl_jersey_number">Số áo</string>
+    <string name="btn_cancel">Hủy</string>
+    <string name="btn_save">Lưu</string>
+    <string name="btn_edit">Sửa</string>
+    <string name="btn_delete">Xóa</string>
+
+    <!-- Player Messages -->
+    <string name="title_confirm_delete">Xác nhận xóa</string>
+    <string name="msg_confirm_delete">Bạn có chắc chắn muốn xóa cầu thủ %1$s?</string>
+    <string name="msg_player_added">Thêm cầu thủ thành công</string>
+    <string name="msg_player_updated">Cập nhật thành công</string>
+    <string name="msg_player_deleted">Đã xóa %1$s</string>
+    <string name="msg_filtering">Đang lọc dữ liệu…</string>
+    <string name="msg_details">Chi tiết: %1$s</string>
+    <string name="msg_search_soon">Tính năng tìm kiếm sẽ sớm ra mắt</string>
+    <string name="msg_more_options">Thêm tùy chọn</string>
+
+    <!-- Player Errors -->
+    <string name="error_id_required">Vui lòng nhập ID</string>
+    <string name="error_id_exists">ID cầu thủ đã tồn tại</string>
+    <string name="error_name_required">Vui lòng nhập tên</string>
+    <string name="error_date_required">Vui lòng nhập ngày sinh</string>
+    <string name="error_date_format">Định dạng sai (dd/MM/yyyy)</string>
+    <string name="error_height_invalid">Chiều cao từ 100&#8211;250 cm</string>
+    <string name="error_weight_invalid">Cân nặng từ 30&#8211;200 kg</string>
+    <string name="error_jersey_invalid">Số áo từ 1 - 99</string>
+    <string name="error_height_required">Vui lòng nhập chiều cao</string>
+    <string name="error_weight_required">Vui lòng nhập cân nặng</string>
+    <string name="error_jersey_required">Vui lòng nhập số áo</string>
+
+    <!-- Player List Item Labels -->
+    <string name="lbl_club_prefix">Câu lạc bộ: %1$s</string>
+    <string name="lbl_position_prefix">Vị trí: %1$s</string>
+    <string name="lbl_nationality_prefix">Quốc gia: %1$s</string>
+    <string name="lbl_other_info_format">Ngày sinh: %1$s | Cao: %2$dcm | Nặng: %3$dkg</string>
+    <string name="lbl_jersey_prefix">Số áo: %1$d</string>
+    <string name="desc_player_avatar">Ảnh đại diện cầu thủ</string>
+    <string name="desc_football_icon">Biểu tượng quả bóng</string>
 </resources>

@@ -107,7 +107,17 @@ CREATE TABLE BangXepHang (
     FOREIGN KEY (MaGiai) REFERENCES GiaiDau(MaGiai)
 );
  
--- BẢNG TÀI KHOẢN NHÂN VIÊN VÀ KHÁCH HÀNG
+-- BẢNG 9: LỊCH SỬ THÀNH TÍCH CLB THEO TỪNG MÙA GIẢI ----------------------------------------------------------------------------------------------------------------------------------
+ 
+CREATE TABLE LichSuThanhTich (
+    MaThanhTich INT AUTO_INCREMENT PRIMARY KEY,
+    MaGiai      VARCHAR(10) NOT NULL,
+    Hang        INT,                -- thứ hạng chung cuộc (1 = vô địch)
+    GhiChu      VARCHAR(255),       -- ghi chú thêm về mùa giải đó
+    FOREIGN KEY (MaGiai) REFERENCES GiaiDau(MaGiai)
+);
+ 
+-- BẢNG TÀI KHOẢN NHÂN VIÊN VÀ KHÁCH HÀNG (phải tạo TRƯỚC TinTuc vì TinTuc tham chiếu tới bảng này)
  
 CREATE TABLE TAIKHOAN (
 	MaTK       INT AUTO_INCREMENT PRIMARY KEY,
@@ -117,6 +127,22 @@ CREATE TABLE TAIKHOAN (
     HoTen      VARCHAR(100),
     VaiTro     ENUM('Admin', 'User') NOT NULL DEFAULT 'User'
 );
+ 
+-- BẢNG 10: TIN TỨC (bài viết về CLB - kết quả, thông báo, chuyển nhượng...)---------------------------------------------------------------------------------------------------------------------
+ 
+CREATE TABLE TinTuc (
+    MaTin      INT AUTO_INCREMENT PRIMARY KEY,
+    TieuDe     VARCHAR(200) NOT NULL,
+    NoiDung    TEXT,
+    HinhAnh    VARCHAR(255),                 -- đường dẫn/URL ảnh đại diện bài viết
+    LoaiTin    VARCHAR(50),                  -- "Kết quả", "Thông báo", "Chuyển nhượng"...
+    NgayDang   DATETIME DEFAULT CURRENT_TIMESTAMP,
+    MaTK       INT,                          -- ai đăng bài (thường là Admin)
+    LuotXem    INT DEFAULT 0,
+    TrangThai  VARCHAR(20) DEFAULT 'Đã đăng', -- Bản nháp / Đã đăng / Đã ẩn
+    FOREIGN KEY (MaTK) REFERENCES TAIKHOAN(MaTK)
+);
+ 
 -- DỮ LIỆU MẪU-------------------------------------------------------
  
  
@@ -125,7 +151,13 @@ INSERT INTO QuocGia VALUES
 ('VIE', 'Việt Nam'),
 ('BRA', 'Brazil'),
 ('NGA', 'Nigeria'),
-('KOR', 'Hàn Quốc');
+('KOR', 'Hàn Quốc'),
+('ENG', 'Anh'),
+('ESP', 'Tây Ban Nha'),
+('GER', 'Đức'),
+('FRA', 'Pháp'),
+('ARG', 'Argentina'),
+('POR', 'Bồ Đào Nha');
  
 -- Thông tin CLB (chỉ 1 dòng)
 INSERT INTO CauLacBo VALUES
@@ -138,16 +170,16 @@ INSERT INTO GiaiDau VALUES
  
 -- Cầu thủ
 INSERT INTO CauThu VALUES
-('CT001', 'toro',     '1993-06-13', 'BRA', 'Thủ môn',   187, 82),
+('CT001', 'toro',             '1993-06-13', 'BRA', 'Thủ môn',   187, 82),
 ('CT002', 'Quế Ngọc Hải',     '1993-12-20', 'VIE', 'Hậu vệ',    178, 74),
 ('CT003', 'Nguyễn Quang Hải', '1997-04-12', 'VIE', 'Tiền vệ',   168, 60),
 ('CT004', 'Tiến Linh',        '1997-03-25', 'VIE', 'Tiền đạo',  180, 74),
-('CT005', 'LUBU',    '1996-01-10', 'KOR', 'Tiền vệ',  175, 72),
-('CT006', 'RÔ Ra Nguyên',    '1996-01-10', 'VIE', 'Tiền vệ',  175, 72),
-('CT007', 'ĐĂNG ME SY',    '1996-01-10', 'VIE', 'Hậu vệ',  175, 72),
-('CT008', 'Tâm',    '1996-01-10', 'VIE', 'Hậu vệ',  175, 72),
-('CT009', 'Gia Huy',    '1996-01-10', 'BRA', 'Hậu vệ',  175, 72),
-('CT000', 'HUY ANH DUNG',    '1996-01-10', 'VIE', 'Tiền đạo',  175, 72);
+('CT005', 'LUBU',             '1996-01-10', 'KOR', 'Tiền vệ',   175, 72),
+('CT006', 'RÔ Ra Nguyên',     '1996-01-10', 'VIE', 'Tiền vệ',   175, 72),
+('CT007', 'ĐĂNG ME SY',       '1996-01-10', 'VIE', 'Hậu vệ',    175, 72),
+('CT008', 'Tâm',              '1996-01-10', 'VIE', 'Hậu vệ',    175, 72),
+('CT009', 'Gia Huy',          '1996-01-10', 'BRA', 'Hậu vệ',    175, 72),
+('CT010', 'HUY ANH DUNG',     '1996-01-10', 'VIE', 'Tiền đạo',  175, 72);
  
 -- Hợp đồng
 INSERT INTO HopDong VALUES
@@ -155,7 +187,12 @@ INSERT INTO HopDong VALUES
 ('HD002', 'CT002', 5,  '2020-01-01', '2024-12-31'),
 ('HD003', 'CT003', 19, '2023-01-01', '2026-12-31'),
 ('HD004', 'CT004', 9,  '2022-01-01', '2025-12-31'),
-('HD005', 'CT005', 10, '2023-06-01', '2025-05-31');
+('HD005', 'CT005', 10, '2023-06-01', '2025-05-31'),
+('HD006', 'CT006', 11, '2023-01-01', '2025-12-31'),
+('HD007', 'CT007', 4,  '2022-01-01', '2025-12-31'),
+('HD008', 'CT008', 3,  '2022-01-01', '2025-12-31'),
+('HD009', 'CT009', 2,  '2022-01-01', '2025-12-31'),
+('HD010', 'CT010', 20, '2023-01-01', '2025-12-31');
  
 -- Trận đấu (đội "Hà Nội FC" là CLB mình, còn lại là đối thủ)
 INSERT INTO TranDau VALUES
@@ -178,29 +215,66 @@ INSERT INTO BangXepHang VALUES
 ('VL1',   2, 1, 0, 1, 4, 2, 3),
 ('CUPQG', 1, 1, 0, 0, 2, 1, 3);
  
+-- Lịch sử thành tích CLB theo mùa giải
+INSERT INTO LichSuThanhTich (MaGiai, Hang, GhiChu) VALUES
+('VL1',   3, 'Kết thúc mùa 2023-2024'),
+('CUPQG', 2, 'Thua chung kết');
+ 
+-- -----------------------------------------------TAI KHOAN-------------------------------------------------------------------------------------------------------------
+ 
 INSERT INTO TAIKHOAN (TenDangNhap, MatKhau, Email, HoTen, VaiTro) VALUES
-('admin',     '123456', 'admin@hanoifc.vn', 'Quản trị viên', 'Admin'),
-('nguyenvana','123456', 'vana@gmail.com',   'Nguyễn Văn A',  'User');
+('QUYENWIPU',     '123456', 'quyen@hanoifc.vn', 'Quản trị viên', 'Admin'),
+('7CHUNONGLAM','123456', 'nonglam@gmail.com',   'Nguyễn Văn A',  'User');
  
+-- ----------------------------------------------TIN TUC ------------------------------------------------------------------------------------------------------------------------------
  
+INSERT INTO TinTuc (TieuDe, NoiDung, HinhAnh, LoaiTin, MaTK, LuotXem) VALUES
+('Hà Nội FC thắng đậm Viettel FC 3-0',
+ 'Trận đấu vòng 5 V.League 1 chứng kiến màn trình diễn ấn tượng của Hà Nội FC khi giành chiến thắng 3-0 trên sân khách.',
+ 'https://example.com/img/tin1.jpg', 'Kết quả', 1, 152),
+ 
+('Thông báo lịch tập luyện tuần tới',
+ 'CLB thông báo lịch tập trung chuẩn bị cho vòng đấu tiếp theo tại Cúp Quốc Gia.',
+ 'https://example.com/img/tin2.jpg', 'Thông báo', 1, 48),
+ 
+('Hà Nội FC chiêu mộ tân binh cho mùa giải mới',
+ 'CLB vừa hoàn tất đàm phán với một tiền vệ trẻ tài năng, dự kiến ra mắt trong trận đấu sắp tới.',
+ 'https://example.com/img/tin3.jpg', 'Chuyển nhượng', 1, 210);
+ 
+ -- https://example.com/img/tin3.jpg cho nay may o tu them anh vao nhe
 -- ---------------------------------------------------------------------------------------------------------
-
+ 
 SELECT * FROM TAIKHOAN;
  
--- 1. Danh sách cầu thủ hiện tại + hợp đồng
+-- 1. Danh sách tin tức mới nhất
+SELECT tt.TieuDe, tt.LoaiTin, tt.NgayDang, tk.HoTen AS NguoiDang, tt.LuotXem
+FROM TinTuc tt
+LEFT JOIN TAIKHOAN tk ON tt.MaTK = tk.MaTK
+WHERE tt.TrangThai = 'Đã đăng'
+ORDER BY tt.NgayDang DESC;
+ 
+ 
+-- 2. Top tin được xem nhiều nhất
+SELECT TieuDe, LoaiTin, LuotXem
+FROM TinTuc
+ORDER BY LuotXem DESC
+LIMIT 5;
+ 
+ 
+-- 3. Danh sách cầu thủ hiện tại + hợp đồng
  SELECT ct.HoTen, ct.ViTri, hd.SoAo, hd.NgayBatDau, hd.NgayKetThuc
  FROM CauThu ct
  JOIN HopDong hd ON ct.MaCT = hd.MaCT
  WHERE CURDATE() BETWEEN hd.NgayBatDau AND hd.NgayKetThuc;
  
--- 2. Bảng xếp hạng theo giải
+-- 4. Bảng xếp hạng theo giải
  SELECT gd.TenGiai, bxh.SoTran, bxh.Thang, bxh.Hoa, bxh.Thua,
         bxh.BanThang, bxh.BanThua, (bxh.BanThang - bxh.BanThua) AS HieuSo, bxh.Diem
  FROM BangXepHang bxh
  JOIN GiaiDau gd ON bxh.MaGiai = gd.MaGiai
  ORDER BY bxh.Diem DESC, (bxh.BanThang - bxh.BanThua) DESC;
  
--- 3. Vua phá lưới
+-- 5. Vua phá lưới
  SELECT ct.HoTen, COUNT(*) AS SoBanThang
  FROM SuKienTran sk
  JOIN CauThu ct ON sk.MaCT = ct.MaCT
@@ -211,10 +285,15 @@ SELECT * FROM TAIKHOAN;
 -- ASC = tăng dần (mặc định)
 -- DESC = giảm dần
  
--- 4. Lịch thi đấu
+-- 6. Lịch thi đấu
  SELECT td.NgayThi, td.DoiNha, td.BanThangNha,
         td.BanThangKhach, td.DoiKhach, gd.TenGiai
  FROM TranDau td
  JOIN GiaiDau gd ON td.MaGiai = gd.MaGiai
  ORDER BY td.NgayThi;
  
+-- 7. Lịch sử thành tích CLB qua từng mùa giải (mới nhất lên đầu)
+ SELECT gd.TenGiai, gd.MuaGiai, lst.Hang, lst.GhiChu
+ FROM LichSuThanhTich lst
+ JOIN GiaiDau gd ON lst.MaGiai = gd.MaGiai
+ ORDER BY gd.MuaGiai DESC, lst.Hang ASC;
