@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <!-- Thanh tiêu đề giả có nút thoát -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="#2196F3"
+        android:padding="8dp">
+
+        <ImageButton
+            android:id="@+id/btnBack"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@android:drawable/ic_menu_revert"
+            app:tint="#FFFFFF" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="Chi Tiết Cầu Thủ"
+            android:textColor="#FFFFFF"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+    </RelativeLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- Ảnh cầu thủ trong màn hình chi tiết -->
+            <ImageView
+                android:id="@+id/ivHinhAnhChiTiet"
+                android:layout_width="match_parent"
+                android:layout_height="250dp"
+                android:scaleType="centerInside"
+                android:layout_marginBottom="16dp"
+                android:src="@android:drawable/ic_menu_gallery" />
+
+            <TextView
+                android:id="@+id/tvHoTenChiTiet"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="28sp"
+                android:textColor="#212121"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:layout_marginBottom="16dp"/>
+
+            <!-- Khung thông tin -->
+            <TableLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:stretchColumns="1">
+
+                <TableRow android:padding="8dp">
+                    <TextView android:text="Ngày sinh: " android:textStyle="bold" android:textSize="16sp"/>
+                    <TextView android:id="@+id/tvNgaySinhChiTiet" android:textSize="16sp"/>
+                </TableRow>
+
+                <TableRow android:padding="8dp">
+                    <TextView android:text="Quốc tịch: " android:textStyle="bold" android:textSize="16sp"/>
+                    <TextView android:id="@+id/tvQuocGiaChiTiet" android:textSize="16sp"/>
+                </TableRow>
+
+                <TableRow android:padding="8dp">
+                    <TextView android:text="Vị trí: " android:textStyle="bold" android:textSize="16sp"/>
+                    <TextView android:id="@+id/tvViTriChiTiet" android:textSize="16sp"/>
+                </TableRow>
+
+                <TableRow android:padding="8dp">
+                    <TextView android:text="Chiều cao: " android:textStyle="bold" android:textSize="16sp"/>
+                    <TextView android:id="@+id/tvChieuCaoChiTiet" android:textSize="16sp"/>
+                </TableRow>
+
+                <TableRow android:padding="8dp">
+                    <TextView android:text="Cân nặng: " android:textStyle="bold" android:textSize="16sp"/>
+                    <TextView android:id="@+id/tvCanNangChiTiet" android:textSize="16sp"/>
+                </TableRow>
+
+            </TableLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>
