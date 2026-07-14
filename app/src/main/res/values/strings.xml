@@ -9,10 +9,11 @@
     <string name="nationality_hint">Quốc gia</string>
     <string name="position_hint">Vị trí</string>
     <string name="club_hint">Câu lạc bộ</string>
-    <string name="filter_button">Lọc</string>
+    <string name="btn_filter">Lọc</string>
+    <string name="btn_reset">Đặt lại</string>
     <string name="empty_players_message">Không tìm thấy cầu thủ nào</string>
     <string name="empty_players_hint">Nhấn nút + để thêm cầu thủ.</string>
-    <string name="add_player_desc">Thêm cầu thủ</string>
+    <string name="add_player_desc">Thêm cầu thủ mới</string>
 
     <!-- Menu Actions -->
     <string name="action_search">Tìm kiếm</string>
@@ -21,7 +22,7 @@
     <!-- Player Dialog Labels -->
     <string name="lbl_player_info">Thông tin cầu thủ</string>
     <string name="lbl_edit_player">Chỉnh sửa cầu thủ</string>
-    <string name="lbl_player_id">ID cầu thủ</string>
+    <string name="lbl_player_id">Mã cầu thủ</string>
     <string name="lbl_full_name">Họ và tên</string>
     <string name="lbl_birth_date">Ngày sinh</string>
     <string name="lbl_height">Chiều cao (cm)</string>
@@ -35,33 +36,38 @@
     <!-- Player Messages -->
     <string name="title_confirm_delete">Xác nhận xóa</string>
     <string name="msg_confirm_delete">Bạn có chắc chắn muốn xóa cầu thủ %1$s?</string>
-    <string name="msg_player_added">Thêm cầu thủ thành công</string>
-    <string name="msg_player_updated">Cập nhật thành công</string>
-    <string name="msg_player_deleted">Đã xóa %1$s</string>
-    <string name="msg_filtering">Đang lọc dữ liệu…</string>
-    <string name="msg_details">Chi tiết: %1$s</string>
-    <string name="msg_search_soon">Tính năng tìm kiếm sẽ sớm ra mắt</string>
-    <string name="msg_more_options">Thêm tùy chọn</string>
+    <string name="msg_player_added">Đã thêm %1$s vào danh sách</string>
+    <string name="msg_player_updated">Đã cập nhật thông tin %1$s</string>
+    <string name="msg_player_deleted">Đã xóa cầu thủ %1$s</string>
+    <string name="msg_undo">Hoàn tác</string>
+    <string name="msg_filtering">Đang cập nhật danh sách…</string>
+    <string name="msg_details">Thông tin chi tiết: %1$s</string>
+
+    <!-- Menu -->
+    <string name="menu_sort">Sắp xếp theo</string>
+    <string name="sort_name">Tên (A-Z)</string>
+    <string name="sort_height">Chiều cao</string>
+    <string name="sort_number">Số áo</string>
 
     <!-- Player Errors -->
-    <string name="error_id_required">Vui lòng nhập ID</string>
-    <string name="error_id_exists">ID cầu thủ đã tồn tại</string>
-    <string name="error_name_required">Vui lòng nhập tên</string>
-    <string name="error_date_required">Vui lòng nhập ngày sinh</string>
-    <string name="error_date_format">Định dạng sai (dd/MM/yyyy)</string>
-    <string name="error_height_invalid">Chiều cao từ 100&#8211;250 cm</string>
-    <string name="error_weight_invalid">Cân nặng từ 30&#8211;200 kg</string>
-    <string name="error_jersey_invalid">Số áo từ 1 - 99</string>
+    <string name="error_id_required">Mã cầu thủ không được để trống</string>
+    <string name="error_id_exists">Mã cầu thủ này đã tồn tại</string>
+    <string name="error_name_required">Họ tên không được để trống</string>
+    <string name="error_date_required">Ngày sinh không được để trống</string>
+    <string name="error_date_format">Định dạng ngày phải là dd/MM/yyyy</string>
+    <string name="error_height_invalid">Chiều cao hợp lệ: 100–250 cm</string>
+    <string name="error_weight_invalid">Cân nặng hợp lệ: 30–200 kg</string>
+    <string name="error_jersey_invalid">Số áo hợp lệ: 1–99</string>
     <string name="error_height_required">Vui lòng nhập chiều cao</string>
     <string name="error_weight_required">Vui lòng nhập cân nặng</string>
     <string name="error_jersey_required">Vui lòng nhập số áo</string>
 
     <!-- Player List Item Labels -->
-    <string name="lbl_club_prefix">Câu lạc bộ: %1$s</string>
+    <string name="lbl_club_prefix">CLB: %1$s</string>
     <string name="lbl_position_prefix">Vị trí: %1$s</string>
     <string name="lbl_nationality_prefix">Quốc gia: %1$s</string>
-    <string name="lbl_other_info_format">Ngày sinh: %1$s | Cao: %2$dcm | Nặng: %3$dkg</string>
+    <string name="lbl_other_info_format">NS: %1$s | %2$dcm - %3$dkg</string>
     <string name="lbl_jersey_prefix">Số áo: %1$d</string>
     <string name="desc_player_avatar">Ảnh đại diện cầu thủ</string>
-    <string name="desc_football_icon">Biểu tượng quả bóng</string>
+    <string name="desc_football_icon">Biểu tượng bóng đá</string>
 </resources>

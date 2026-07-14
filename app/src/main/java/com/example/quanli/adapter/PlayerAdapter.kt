@@ -2,11 +2,15 @@ package com.example.quanli.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.quanli.R
 import com.example.quanli.databinding.ItemPlayerBinding
 import com.example.quanli.model.PlayerModel
 
+/**
+ * Adapter for displaying player items in a RecyclerView.
+ */
 class PlayerAdapter(
     private var players: List<PlayerModel>,
     private val onEditClick: (PlayerModel) -> Unit = {},
@@ -14,34 +18,58 @@ class PlayerAdapter(
     private val onItemClick: (PlayerModel) -> Unit = {}
 ) : RecyclerView.Adapter<PlayerAdapter.PlayerViewHolder>() {
 
-    class PlayerViewHolder(val binding: ItemPlayerBinding) : RecyclerView.ViewHolder(binding.root)
+    inner class PlayerViewHolder(private val binding: ItemPlayerBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+
+        fun bind(player: PlayerModel) {
+            val context = binding.root.context
+            binding.apply {
+                tvPlayerName.text = player.name
+                tvClub.text = context.getString(R.string.lbl_club_prefix, player.club)
+                tvPosition.text = context.getString(R.string.lbl_position_prefix, player.position)
+                tvNationality.text = context.getString(R.string.lbl_nationality_prefix, player.nationality)
+                tvOtherInfo.text = context.getString(R.string.lbl_other_info_format, 
+                    player.birthDate, player.height, player.weight)
+                tvJerseyNumber.text = player.jerseyNumber.toString()
+                ivPlayerAvatar.setImageResource(player.avatar)
+
+                btnEdit.setOnClickListener { onEditClick(player) }
+                btnDelete.setOnClickListener { onDeleteClick(player) }
+                root.setOnClickListener { onItemClick(player) }
+            }
+        }
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlayerViewHolder {
-        val binding = ItemPlayerBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding = ItemPlayerBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            false
+        )
         return PlayerViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: PlayerViewHolder, position: Int) {
-        val player = players[position]
-        val context = holder.binding.root.context
-        holder.binding.apply {
-            tvPlayerName.text = player.name
-            tvPlayerId.text = player.playerId
-            tvPlayerPosition.text = context.getString(R.string.lbl_position_prefix, player.position)
-            tvPlayerClub.text = context.getString(R.string.lbl_club_prefix, player.club)
-            tvPlayerNumber.text = context.getString(R.string.lbl_jersey_prefix, player.jerseyNumber)
-            ivPlayerAvatar.setImageResource(player.avatar)
-
-            btnEditPlayer.setOnClickListener { onEditClick(player) }
-            btnDeletePlayer.setOnClickListener { onDeleteClick(player) }
-            root.setOnClickListener { onItemClick(player) }
-        }
+        holder.bind(players[position])
     }
 
     override fun getItemCount(): Int = players.size
 
     fun updateData(newPlayers: List<PlayerModel>) {
-        players = newPlayers
-        notifyDataSetChanged()
+        val diffResult = DiffUtil.calculateDiff(PlayerDiffCallback(this.players, newPlayers))
+        this.players = newPlayers
+        diffResult.dispatchUpdatesTo(this)
+    }
+
+    private class PlayerDiffCallback(
+        private val oldList: List<PlayerModel>,
+        private val newList: List<PlayerModel>
+    ) : DiffUtil.Callback() {
+        override fun getOldListSize() = oldList.size
+        override fun getNewListSize() = newList.size
+        override fun areItemsTheSame(oldPos: Int, newPos: Int) = 
+            oldList[oldPos].playerId == newList[newPos].playerId
+        override fun areContentsTheSame(oldPos: Int, newPos: Int) = 
+            oldList[oldPos] == newList[newPos]
     }
 }
