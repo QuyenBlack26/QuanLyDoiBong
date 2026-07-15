@@ -38,6 +38,10 @@ class AddNewsActivity : AppCompatActivity() {
             }
         }
         
+        UserHeaderUtils.setupUserHeader(this)
+        
+        NavigationUtils.setupBottomNavigation(this, R.id.nav_news)
+        
         supportActionBar?.title = "Thêm tin tức"
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }

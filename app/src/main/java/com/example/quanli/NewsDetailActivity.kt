@@ -27,6 +27,10 @@ class NewsDetailActivity : AppCompatActivity() {
             .placeholder(android.R.color.darker_gray)
             .into(imageView)
             
+        UserHeaderUtils.setupUserHeader(this)
+        
+        NavigationUtils.setupBottomNavigation(this, R.id.nav_news)
+
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.title = "Chi tiết tin tức"
     }

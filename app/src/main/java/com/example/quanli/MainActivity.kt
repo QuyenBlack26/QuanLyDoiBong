@@ -54,10 +54,14 @@ class MainActivity : AppCompatActivity() {
         toolbar.setNavigationOnClickListener {
             onBackPressedDispatcher.onBackPressed()
         }
+
+        UserHeaderUtils.setupUserHeader(this)
         
         setupRecyclerView()
         observeViewModel()
         setupFab()
+        
+        NavigationUtils.setupBottomNavigation(this, R.id.nav_news)
     }
 
     private fun setupRecyclerView() {

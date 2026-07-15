@@ -33,6 +33,12 @@ class TeamDetailFragment : Fragment() {
 
         setupRecyclerView(view)
         setupTabs(view)
+        
+        val initialTab = arguments?.getInt("INITIAL_TAB", 0) ?: 0
+        if (initialTab > 0) {
+            val tabs = view.findViewById<TabLayout>(R.id.tabLayout)
+            tabs.getTabAt(initialTab)?.select()
+        }
     }
 
     private fun setupRecyclerView(root: View) {

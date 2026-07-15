@@ -1,0 +1,7 @@
+- [x] Create `layout_user_header.xml`
+- [x] Create `UserHeaderUtils.kt`
+- [x] Update `activity_home_new.xml` and `HomeNewActivity.kt`
+- [x] Update `activity_main.xml` and `MainActivity.kt`
+- [x] Update `activity_home.xml` and `HomeActivity.kt`
+- [x] Update `activity_player_management.xml` and `PlayerManagementActivity.kt`
+- [x] Verify persistence and display across all pages

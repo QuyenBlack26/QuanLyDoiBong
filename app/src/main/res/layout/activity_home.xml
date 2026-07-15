@@ -13,15 +13,19 @@
         app:titleTextColor="@android:color/white"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageView
-        android:id="@+id/logoImageView"
-        android:layout_width="280dp"
-        android:layout_height="280dp"
-        android:src="@drawable/logo_doi_bong"
-        android:contentDescription="Logo Đội bóng"
-        app:layout_constraintBottom_toTopOf="@id/bottomNavigation"
+    <include
+        layout="@layout/layout_user_header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@id/toolbar"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/toolbar" />
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@id/bottomNavigation"
         app:layout_constraintTop_toBottomOf="@id/toolbar" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
@@ -29,7 +33,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?android:attr/windowBackground"
-        app:menu="@menu/menu_home"
+        app:menu="@menu/menu_bottom_nav"
         app:labelVisibilityMode="labeled"
         app:layout_constraintBottom_toBottomOf="parent" />
 

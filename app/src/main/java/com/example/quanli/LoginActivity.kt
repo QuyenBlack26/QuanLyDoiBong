@@ -9,6 +9,8 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.example.quanli.viewmodel.AuthViewModel
+import com.example.quanli.database.DatabaseHelper
+import com.example.quanli.model.UserAccount
 
 class LoginActivity : AppCompatActivity() {
     private val viewModel: AuthViewModel by viewModels()
@@ -36,8 +38,17 @@ class LoginActivity : AppCompatActivity() {
         viewModel.loginStatus.observe(this) { success ->
             if (success) {
                 Toast.makeText(this, "Đăng nhập thành công", Toast.LENGTH_SHORT).show()
+                
+                // Save session
+                val username = edtUser.text.toString().trim()
+                val dbHelper = DatabaseHelper(this)
+                val user = dbHelper.getUserByUsername(username)
+                if (user != null) {
+                    SessionManager(this).saveUser(user)
+                }
+
                 val intent = Intent(this, HomeNewActivity::class.java)
-                intent.putExtra("USERNAME", edtUser.text.toString().trim())
+                intent.putExtra("USERNAME", username)
                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                 startActivity(intent)
                 finish()

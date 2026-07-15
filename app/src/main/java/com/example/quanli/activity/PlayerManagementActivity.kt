@@ -11,6 +11,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.example.quanli.R
+import com.example.quanli.UserHeaderUtils
 import com.example.quanli.adapter.PlayerAdapter
 import com.example.quanli.databinding.ActivityPlayerManagementBinding
 import com.example.quanli.databinding.DialogPlayerBinding
@@ -43,6 +44,10 @@ class PlayerManagementActivity : AppCompatActivity() {
         setupRecyclerView()
         setupFilters()
         setupListeners()
+        
+        UserHeaderUtils.setupUserHeader(this)
+        
+        com.example.quanli.NavigationUtils.setupBottomNavigation(this, R.id.nav_admin)
     }
 
     private fun setupToolbar() {
